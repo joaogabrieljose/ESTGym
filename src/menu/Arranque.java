@@ -37,7 +37,7 @@ public class Arranque {
 			main.addEquipamento(17, getIcons("fisica"));
 			main.addEquipamento(18, getIcons("porta_piscina"));
 			
-			System.out.println("testa se funciona a nova version ");
+			// System.out.println("testa se funciona a nova version ");
 
 			main.setVisible(true);
 			RelogioDialog relog = new RelogioDialog(main, new Point(200, 20));
