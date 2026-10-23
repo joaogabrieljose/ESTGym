@@ -35,13 +35,13 @@ public class GinasioDefault implements IGinasio {
         if (membros.containsKey(membro.getId())) {
             throw new IllegalArgumentException(" já existe membro com esse ID. ");
         }
-        membro.put(membro.getId(), membro);
+        membros.put(membro.getId(), membro);
     }
 
 
     @Override
     public Membro procurarMembro(int id) {
-        return membros.getId(id);
+        return membros.get(id);
     }
 
 
@@ -90,7 +90,7 @@ public class GinasioDefault implements IGinasio {
 
       @Override
     public Servico procurarServico(int id) {
-        return servicos.getId(id);
+        return servicos.get(id);
     }
 
     @Override

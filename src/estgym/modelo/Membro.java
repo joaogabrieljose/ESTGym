@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Membro {
 
     private final int id;
-    private String nome;
+    private final String nome;
     private boolean dentroGinasio;
 
     private final List<ContratoServico> contratos;
@@ -90,9 +90,7 @@ public class Membro {
     }
    public void entrarGinasio() {
         if (dentroGinasio) {
-            throw new IllegalStateException(
-                "O membro já está dentro do ginásio."
-            );
+            throw new IllegalStateException("O membro já está dentro do ginásio." );
         }
 
         dentroGinasio = true;
@@ -100,9 +98,7 @@ public class Membro {
 
     public void sairGinasio() {
         if (!dentroGinasio) {
-            throw new IllegalStateException(
-                "O membro já está fora do ginásio."
-            );
+            throw new IllegalStateException( "O membro já está fora do ginásio.");
         }
 
         dentroGinasio = false;
@@ -123,9 +119,7 @@ public class Membro {
         Objects.requireNonNull(agora);
 
         if (estaOcupado(agora)) {
-            throw new IllegalStateException(
-                "O membro já está a utilizar um serviço."
-            );
+            throw new IllegalStateException( "O membro já está a utilizar um serviço.");
         }
 
         this.utilizacaoAtiva = utilizacao;
@@ -140,6 +134,5 @@ public class Membro {
             utilizacaoAtiva = null;
         }
     }
-
 
 }
