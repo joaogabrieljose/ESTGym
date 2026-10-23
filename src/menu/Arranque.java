@@ -13,9 +13,14 @@ import estgym.equipamentos.EquipamentoAula;
 import estgym.equipamentos.EquipamentoExclusivo;
 import estgym.ginasio.GinasioDefault;
 import estgym.ginasio.IGinasio;
+import estgym.modelo.Membro;
 import estgym.modelo.Servico;
 import estgym.modelo.TipoService;
 import estgym.modelo.UtilizacaoAtiva;
+import estgym.regras.CondicaoServico;
+import estgym.regras.Plano;
+import estgym.regras.RegraLimiteDiario;
+import estgym.regras.RegraLimiteSemanal;
 import pds.util.RelogioSimulado;
 
 public class Arranque {
@@ -52,7 +57,6 @@ public class Arranque {
 		ginasio.adicionarServico(massagem);
 		ginasio.adicionarServico(aulaNivel1);
 		ginasio.adicionarServico(aulaNivel2);
-
 
 		// System.out.println("===== TESTE DOS SERVIÇOS =====");
 
@@ -96,7 +100,7 @@ public class Arranque {
 		Equipamento portaPiscina = new EquipamentoExclusivo(114, "Porta da piscina",piscina, true, Duration.ofSeconds(3));
 		Equipamento aulaCycling = new EquipamentoAula(115, "Aula Cycling",aulaNivel1, Duration.ofMinutes(50), 25);
 		Equipamento aulaBodyCombat = new EquipamentoAula(116, "Aula Body Combat",aulaNivel2, Duration.ofMinutes(30), 20);
-		Equipamento aulaIoga = new EquipamentoAula(117, "Aula Ioga",aulaNivel1, Duration.ofMinutes(60), 15);
+		Equipamento aulaIoga = new EquipamentoAula(117, "Aula Ioga",aulaNivel2, Duration.ofMinutes(60), 15);
 
 				
 		List<Equipamento> equipamentos = List.of(
@@ -108,8 +112,6 @@ public class Arranque {
 		for (Equipamento equipamento : equipamentos) {
 			ginasio.adicionarEquipamento(equipamento);
 		}
-
-
 				
 		// System.out.println(
 		// 	"===== TESTE DOS EQUIPAMENTOS ====="
@@ -138,9 +140,130 @@ public class Arranque {
 
 	
 
-		// TODO criar oe membros
+		// TODO FEITO  criar oe membros
 
-		// TODO criar os planos para cada membro
+		Membro vitor = new Membro(1, "Vítor Virtual");
+		Membro iris = new Membro(2, "Iris Irreal");
+		Membro ines = new Membro(3, "Inês Inexistente");
+		Membro filipe = new Membro(4, "Filipe Fictício");
+		Membro diogo = new Membro(5, "Diogo Digital");
+		Membro beatriz = new Membro(6, "Beatriz Bytes");
+
+		for (Membro membro : List.of(
+				vitor, iris, ines, filipe, diogo, beatriz)) {
+
+			ginasio.adicionarMembro(membro);
+		}
+
+		// System.out.println("===== TESTE DOS MEMBROS =====");
+
+		// for (Membro membro : ginasio.listarMembros()) {
+		// 	System.out.println(
+		// 		"ID: " + membro.getId()
+		// 		+ " | Nome: " + membro.getNome()
+		// 		+ " | Dentro do ginásio: "
+		// 		+ membro.isDentroGinasio()
+		// 	);
+		// }
+
+		// System.out.println(
+		// 	"Total de membros: "
+		// 	+ ginasio.listarMembros().size()
+		// );
+
+		
+
+
+
+		// TODO FEITO criar os planos para cada membro
+
+		Plano planoVitor = new Plano(1001, "Plano Vítor", "Condições do Vítor Virtual");
+		adicionarCondicao(planoVitor, entrada,"1 hora por dia, 3 dias por semana",Duration.ofHours(1), null, null);
+		adicionarCondicao(planoVitor, saida,"Sempre", null, null, null);
+		adicionarCondicao(planoVitor, aulaNivel1,"1 aula por semana", null, null, 1);
+		adicionarCondicao(planoVitor, duche,"1 duche por dia, 3 + 2 minutos",Duration.ofMinutes(3), 1, null);
+		adicionarCondicao(planoVitor, bebida,"1 abastecimento por dia", null, 1, null);
+		adicionarCondicao(planoVitor, nutricao,"1 consulta de 6 em 6 meses",null, null, null);
+		adicionarCondicao(planoVitor, avaliacao,"1 consulta de 3 em 3 meses",null, null, null);
+
+		Plano planoIris = new Plano(1002, "Plano Iris", "Condições da Iris Irreal");
+		adicionarCondicao(planoIris, entrada,"3 vezes por semana", null, null, 3);
+		adicionarCondicao(planoIris, saida,"Sempre", null, null, null);
+		adicionarCondicao(planoIris, piscina,"45 minutos por dia, 2 dias por semana",Duration.ofMinutes(45), null, null);
+		adicionarCondicao(planoIris, duche,"1 duche por dia, 5 + 2 minutos",Duration.ofMinutes(5), 1, null);
+		adicionarCondicao(planoIris, bebida,"2 abastecimentos por dia, intervalo de 30 minutos",null, 2, null);
+		adicionarCondicao(planoIris, personalTrainer,"45 minutos por dia, 3 dias por semana",Duration.ofMinutes(45), null, null);
+		adicionarCondicao(planoIris, nutricao,"1 consulta de 6 em 6 meses",null, null, null);
+		adicionarCondicao(planoIris, avaliacao,"1 consulta de 3 em 3 meses",null, null, null);
+
+		Plano planoInes = new Plano(1003, "Plano Inês", "Condições da Inês Inexistente");
+		adicionarCondicao(planoInes, entrada,"Sempre", null, null, null);
+		adicionarCondicao(planoInes, saida,"Sempre", null, null, null);
+		adicionarCondicao(planoInes, aulaNivel1,"1 aula por semana", null, null, 1);
+		adicionarCondicao(planoInes, duche,"1 duche por dia, 5 + 2 minutos",Duration.ofMinutes(5), 1, null);
+		adicionarCondicao(planoInes, bebida,"2 abastecimentos por dia, intervalo de 30 minutos",null, 2, null);
+		adicionarCondicao(planoInes, nutricao,"1 consulta por mês", null, null, null);
+		adicionarCondicao(planoInes, avaliacao,"1 consulta de 3 em 3 meses",null, null, null);
+
+		Plano planoFilipe = new Plano(1004, "Plano Filipe", "Condições do Filipe Fictício");
+		adicionarCondicao(planoFilipe, entrada,"3 vezes por semana", null, null, 3);
+		adicionarCondicao(planoFilipe, saida,"Sempre", null, null, null);
+		adicionarCondicao(planoFilipe, aulaNivel1,"2 aulas por semana", null, null, 2);
+		adicionarCondicao(planoFilipe, aulaNivel2,"1 aula por semana", null, null, 1);
+		adicionarCondicao(planoFilipe, piscina,"45 minutos por dia, 2 dias por semana",Duration.ofMinutes(45), null, null);
+		adicionarCondicao(planoFilipe, duche,"1 duche por dia, 5 + 2 minutos",Duration.ofMinutes(5), 1, null);
+		adicionarCondicao(planoFilipe, bebida,	"2 abastecimentos por dia, intervalo de 30 minutos",null, 2, null);
+		adicionarCondicao(planoFilipe, personalTrainer,"45 minutos por dia, 3 dias por semana",Duration.ofMinutes(45), null, null);
+		adicionarCondicao(planoFilipe, nutricao,"1 consulta de 6 em 6 meses",null, null, null);
+		adicionarCondicao(planoFilipe, avaliacao,"1 consulta de 3 em 3 meses",null, null, null);
+		adicionarCondicao(planoFilipe, massagem,"1 sessão por dia, 3 por semana",null, 1, 3);
+
+		Plano planoDiogo = new Plano(1005, "Plano Diogo", "Condições do Diogo Digital");
+		adicionarCondicao(planoDiogo, entrada,"Sempre", null, null, null);
+		adicionarCondicao(planoDiogo, saida,"Sempre", null, null, null);
+		adicionarCondicao(planoDiogo, aulaNivel1,"Ilimitado", null, null, null);
+		adicionarCondicao(planoDiogo, aulaNivel2,"3 aulas por semana", null, null, 3);
+		adicionarCondicao(planoDiogo, piscina,"1 hora por dia, 5 dias por semana",Duration.ofHours(1), null, null);
+		adicionarCondicao(planoDiogo, duche,"2 duches por dia, 6 + 3 minutos",Duration.ofMinutes(6), 2, null);
+		adicionarCondicao(planoDiogo, bebida,"4 abastecimentos por dia, intervalo de 20 minutos",null, 4, null);
+		adicionarCondicao(planoDiogo, nutricao,"1 consulta de 3 em 3 meses",null, null, null);
+		adicionarCondicao(planoDiogo, avaliacao,"1 consulta de 3 em 3 meses",null, null, null);
+		adicionarCondicao(planoDiogo, massagem,"1 sessão por dia, 7 por semana",null, 1, 7);
+
+		Plano planoBeatriz = new Plano(1006, "Plano Beatriz", "Condições da Beatriz Bytes");
+		adicionarCondicao(planoBeatriz, entrada,"Sempre", null, null, null);
+		adicionarCondicao(planoBeatriz, saida,"Sempre", null, null, null);
+		adicionarCondicao(planoBeatriz, aulaNivel1,"Ilimitado", null, null, null);
+		adicionarCondicao(planoBeatriz, aulaNivel2,"Ilimitado", null, null, null);
+		adicionarCondicao(planoBeatriz, duche,"2 duches por dia, 6 + 3 minutos",Duration.ofMinutes(6), 2, null);
+		adicionarCondicao(planoBeatriz, bebida,"4 abastecimentos por dia, intervalo de 20 minutos",null, 4, null);
+		adicionarCondicao(planoBeatriz, personalTrainer,"1 hora por dia, 5 dias por semana",Duration.ofHours(1), null, null);
+		adicionarCondicao(planoBeatriz, nutricao,"1 consulta por mês", null, null, null);
+		adicionarCondicao(planoBeatriz, avaliacao,"1 consulta por mês", null, null, null);
+		adicionarCondicao(planoBeatriz, massagem,"1 sessão por dia, 3 por semana",null, 1, 3);
+
+		vitor.associarPlano(planoVitor);
+		iris.associarPlano(planoIris);
+		ines.associarPlano(planoInes);
+		filipe.associarPlano(planoFilipe);
+		diogo.associarPlano(planoDiogo);
+		beatriz.associarPlano(planoBeatriz);
+
+
+
+		System.out.println("===== TESTE DOS PLANOS =====");
+
+		for (Membro membro : ginasio.listarMembros()) {
+
+			Plano plano = membro.getPlano();
+
+			System.out.println(
+				"Membro: " + membro.getNome()
+				+ " | Plano: " + plano.getNome()
+				+ " | Serviços: " + plano.getCondicoes().size()
+			);
+		}
+
 
 		SwingUtilities.invokeLater(() -> {
 			JanelaGinasio main = new JanelaGinasio();
@@ -177,4 +300,24 @@ public class Arranque {
 				new ImageIcon(pasta + nome + "_ocupado.png") };
 		return icons;
 	}
+
+
+	private static void adicionarCondicao( Plano plano,Servico servico,String descricao,Duration duracao,Integer limiteDiario,Integer limiteSemanal) {
+
+		CondicaoServico condicao = new CondicaoServico(servico, descricao, duracao);
+
+		if (limiteDiario != null) {
+			condicao.adicionarRegra(new RegraLimiteDiario(limiteDiario));
+		}
+
+		if (limiteSemanal != null) {
+			condicao.adicionarRegra(new RegraLimiteSemanal(limiteSemanal));
+		}
+		plano.adicionarCondicao(condicao);
+	}
 }
+
+
+
+
+

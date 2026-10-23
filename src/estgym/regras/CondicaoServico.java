@@ -55,6 +55,12 @@ public class CondicaoServico {
     }
 
     public void adicionarRegra(RegraAcesso regra) {
-        regras.add(Objects.requireNonNull(regra));
+        Objects.requireNonNull(regra,"A regra não pode ser nula.");
+
+        if (regras.contains(regra)) {
+            throw new IllegalArgumentException("A regra já foi adicionada." );
+        }
+
+        regras.add(regra);
     }
 }
