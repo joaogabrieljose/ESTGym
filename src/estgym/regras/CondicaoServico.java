@@ -1,11 +1,11 @@
-package estgym.modelo;
+package estgym.regras;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import estgym.regras.RegraAcesso;
+import estgym.modelo.Servico;
 
 public class CondicaoServico {
     

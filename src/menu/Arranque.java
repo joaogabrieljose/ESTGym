@@ -6,6 +6,10 @@ import java.time.LocalDateTime;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
+import estgym.ginasio.GinasioDefault;
+import estgym.ginasio.IGinasio;
+import estgym.modelo.Servico;
+import estgym.modelo.TipoService;
 import pds.util.RelogioSimulado;
 
 public class Arranque {
@@ -15,7 +19,56 @@ public class Arranque {
 		RelogioSimulado relogio = RelogioSimulado.getRelogioSimulado();
 		relogio.setTempoAtual(LocalDateTime.now());
 
-		// TODO criar os serviços
+		IGinasio ginasio = new GinasioDefault("ESTGym");
+
+		// TODO  FEITO criar os serviços
+		Servico entrada = new Servico(1, "Entrada", "Acesso ao ginasio", TipoService.ENTRADA);
+		Servico saida = new Servico(2,"Saída","Saída do ginásio",TipoService.SAIDA);
+		Servico duche = new Servico(3,"Duche","Utilização dos duches",TipoService.DUCHE);
+		Servico bebida = new Servico(4,"Bebida vitaminada","Dispensador de bebidas vitaminadas", TipoService.BEBIDA_VITAMINADA);
+		Servico piscina = new Servico(5,"Piscina","Acesso à piscina",TipoService.PISCINA);
+		Servico personalTrainer = new Servico(6,"Personal Trainer","Sessão de treino personalizado",TipoService.PERSONAL_TRAINER);
+		Servico nutricao = new Servico(7,"Consulta de nutrição","Acompanhamento nutricional",TipoService.CONSULTA_NUTRICAO);
+		Servico avaliacao = new Servico(8,"Avaliação física","Avaliação da condição física", TipoService.AVALIACAO_FISICA);
+		Servico massagem = new Servico(9,"Cadeira de massagem","Utilização da cadeira de massagem",TipoService.CADEIRA_MASSAGEM);
+		Servico aulaNivel1 = new Servico(10,"Aula de nível 1","Aulas de grupo de nível 1", TipoService.AULA_NIVEL_1);
+		Servico aulaNivel2 = new Servico(11, "Aula de nível 2","Aulas de grupo de nível 2",TipoService.AULA_NIVEL_2);
+
+
+		ginasio.adicionarServico(entrada);
+		ginasio.adicionarServico(saida);
+		ginasio.adicionarServico(duche);
+		ginasio.adicionarServico(bebida);
+		ginasio.adicionarServico(piscina);
+		ginasio.adicionarServico(personalTrainer);
+		ginasio.adicionarServico(nutricao);
+		ginasio.adicionarServico(avaliacao);
+		ginasio.adicionarServico(massagem);
+		ginasio.adicionarServico(aulaNivel1);
+		ginasio.adicionarServico(aulaNivel2);
+
+
+		// System.out.println("===== TESTE DOS SERVIÇOS =====");
+
+		// System.out.println(
+		// 	"Ginásio: " + ginasio.getNome()
+		// );
+
+		// System.out.println(
+		// 	"Total de serviços: "
+		// 		+ ginasio.listarServicos().size()
+		// );
+
+		// for (Servico servico : ginasio.listarServicos()) {
+
+		// 	System.out.println(
+		// 		"ID: " + servico.getId()
+		// 		+ " | Nome: " + servico.getNome()
+		// 		+ " | Tipo: " + servico.getTipo()
+		// 	);
+		// }
+
+
 
 		// TODO criar os equipamentos
 
