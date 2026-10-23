@@ -67,7 +67,7 @@ public class GinasioDefault implements IGinasio {
 
      @Override
     public Equipamento procurarEquipamento(int id) {
-        return equipamentos.getId(id);
+        return equipamentos.get(id);
     }
 
      @Override
