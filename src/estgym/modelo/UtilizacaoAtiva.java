@@ -1,6 +1,8 @@
 package estgym.modelo;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import estgym.equipamentos.Equipamento;
 
@@ -11,15 +13,20 @@ public class UtilizacaoAtiva {
     private final LocalDateTime dataInicio;
     private final LocalDateTime dataFimPrevista;
 
-    public UtilizacaoAtiva(Servico servico,Equipamento equipamento,LocalDateTime dataInicio, LocalDateTime dataFimPrevista) {
-        this.servico = servico;
-        this.equipamento = equipamento;
-        this.dataInicio = dataInicio;
-        this.dataFimPrevista = dataFimPrevista;
-    }
+    public UtilizacaoAtiva(Servico servico,Equipamento equipamento, LocalDateTime dataInicio, LocalDateTime dataFimPrevista) {
 
-    public boolean estaEmCurso(LocalDateTime agora) {
-        return agora.isBefore(dataFimPrevista);
+        this.servico = Objects.requireNonNull(servico,"O serviço é obrigatório.");
+        this.equipamento = Objects.requireNonNull(equipamento,"O equipamento é obrigatório.");
+        this.dataInicio = Objects.requireNonNull( dataInicio, "A data de início é obrigatória.");
+        this.dataFimPrevista = Objects.requireNonNull( dataFimPrevista, "A data de fim prevista é obrigatória.");
+
+        if (!dataFimPrevista.isAfter(dataInicio)) {
+            throw new IllegalArgumentException( "A data de fim deve ser posterior à data de início.");
+        }
+
+        if (equipamento.getServico().getId() != servico.getId()) {
+            throw new IllegalArgumentException( "O serviço não corresponde ao equipamento." );
+        }
     }
 
     public Servico getServico() {
@@ -28,6 +35,41 @@ public class UtilizacaoAtiva {
 
     public Equipamento getEquipamento() {
         return equipamento;
+    }
+
+    public LocalDateTime getDataInicio() {
+        return dataInicio;
+    }
+
+    public LocalDateTime getDataFimPrevista() {
+        return dataFimPrevista;
+    }
+
+    public boolean estaEmCurso(LocalDateTime agora) {
+        Objects.requireNonNull(agora, "A data atual é obrigatória.");
+        return !agora.isBefore(dataInicio) && agora.isBefore(dataFimPrevista);
+    }
+
+    public boolean terminou(LocalDateTime agora) {
+        Objects.requireNonNull(agora,"A data atual é obrigatória.");
+        return !agora.isBefore(dataFimPrevista);
+    }
+
+    public Duration getDuracaoPrevista() {
+        return Duration.between( dataInicio,dataFimPrevista);
+    }
+
+    public Duration getTempoRestante(LocalDateTime agora) {
+        Objects.requireNonNull( agora,"A data atual é obrigatória.");
+
+        if (terminou(agora)) {
+            return Duration.ZERO;
+        }
+
+        return Duration.between(
+            agora.isBefore(dataInicio) ? dataInicio : agora,
+            dataFimPrevista
+        );
     }
 
 }
