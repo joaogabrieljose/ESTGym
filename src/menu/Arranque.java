@@ -19,8 +19,10 @@ import estgym.modelo.TipoService;
 import estgym.regras.CondicaoServico;
 import estgym.regras.ContratoServico;
 import estgym.regras.Plano;
+import estgym.regras.RegraIntervaloMinimo;
 import estgym.regras.RegraLimiteDiario;
 import estgym.regras.RegraLimiteSemanal;
+import estgym.regras.RegraPeriodicidade;
 import pds.util.RelogioSimulado;
 
 public class Arranque {
@@ -58,28 +60,6 @@ public class Arranque {
 		ginasio.adicionarServico(aulaNivel1);
 		ginasio.adicionarServico(aulaNivel2);
 
-		// System.out.println("===== TESTE DOS SERVIÇOS =====");
-
-		// System.out.println(
-		// 	"Ginásio: " + ginasio.getNome()
-		// );
-
-		// System.out.println(
-		// 	"Total de serviços: "
-		// 		+ ginasio.listarServicos().size()
-		// );
-
-		// for (Servico servico : ginasio.listarServicos()) {
-
-		// 	System.out.println(
-		// 		"ID: " + servico.getId()
-		// 		+ " | Nome: " + servico.getNome()
-		// 		+ " | Tipo: " + servico.getTipo()
-		// 	);
-		// }
-
-
-
 		// TODO FEITO  criar os equipamentos
 
 		Equipamento portaEntrada = new EquipamentoExclusivo(100,"Porta de entrada",entrada,false,Duration.ofSeconds(3));
@@ -112,34 +92,7 @@ public class Arranque {
 		for (Equipamento equipamento : equipamentos) {
 			ginasio.adicionarEquipamento(equipamento);
 		}
-				
-		// System.out.println(
-		// 	"===== TESTE DOS EQUIPAMENTOS ====="
-		// );
-
-		// LocalDateTime agora = RelogioSimulado.getTempoAtual();
-
-		// for (Equipamento equipamento : ginasio.listarEquipamentos()) {
-
-		// 	System.out.println(
-		// 		"ID: " + equipamento.getId()
-		// 		+ " | Nome: " + equipamento.getNome()
-		// 		+ " | Serviço: "
-		// 			+ equipamento.getServico().getNome()
-		// 		+ " | Disponível: "
-		// 			+ equipamento.estaDisponivel(agora)
-		// 	);
-		// }
-
-		// System.out.println(
-		// 	"Total de equipamentos: "
-		// 	+ ginasio.listarEquipamentos().size()
-		// );
-
-		
-
 	
-
 		// TODO FEITO  criar oe membros
 
 		Membro vitor = new Membro(1, "Vítor Virtual");
@@ -154,26 +107,6 @@ public class Arranque {
 
 			ginasio.adicionarMembro(membro);
 		}
-
-		// System.out.println("===== TESTE DOS MEMBROS =====");
-
-		// for (Membro membro : ginasio.listarMembros()) {
-		// 	System.out.println(
-		// 		"ID: " + membro.getId()
-		// 		+ " | Nome: " + membro.getNome()
-		// 		+ " | Dentro do ginásio: "
-		// 		+ membro.isDentroGinasio()
-		// 	);
-		// }
-
-		// System.out.println(
-		// 	"Total de membros: "
-		// 	+ ginasio.listarMembros().size()
-		// );
-
-		
-
-
 
 		// TODO FEITO criar os planos para cada membro
 
@@ -242,6 +175,31 @@ public class Arranque {
 		adicionarCondicao(planoBeatriz, avaliacao,"1 consulta por mês", null, null, null);
 		adicionarCondicao(planoBeatriz, massagem,"1 sessão por dia, 3 por semana",null, 1, 3);
 
+		//* REGRAS DE INTERVALO MÍNIMO ENTRE BEBIDAS VITAMINADAS
+
+		planoIris.procurarCondicao(bebida.getId()).adicionarRegra(new RegraIntervaloMinimo(Duration.ofMinutes(30)));
+		planoInes.procurarCondicao(bebida.getId()).adicionarRegra(new RegraIntervaloMinimo(Duration.ofMinutes(30)));
+		planoFilipe.procurarCondicao(bebida.getId()).adicionarRegra(new RegraIntervaloMinimo(Duration.ofMinutes(30)));
+		planoDiogo.procurarCondicao(bebida.getId()).adicionarRegra(new RegraIntervaloMinimo(Duration.ofMinutes(20)));
+		planoBeatriz.procurarCondicao(bebida.getId()).adicionarRegra(new RegraIntervaloMinimo(Duration.ofMinutes(20)));	
+
+		//* REGRAS DE PERIODICIDADE, 1 mes, 3 meses e  6 meses 
+		planoVitor.procurarCondicao(nutricao.getId()).adicionarRegra(new RegraPeriodicidade(6));
+		planoVitor.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(3));
+		planoIris.procurarCondicao(nutricao.getId()).adicionarRegra(new RegraPeriodicidade(6));
+		planoIris.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(3));
+		planoInes.procurarCondicao(nutricao.getId()).adicionarRegra(new RegraPeriodicidade(1));
+		planoInes.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(3));
+		planoFilipe.procurarCondicao(nutricao.getId()).adicionarRegra(new RegraPeriodicidade(6));
+		planoFilipe.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(3));
+		planoDiogo.procurarCondicao(nutricao.getId()).adicionarRegra(new RegraPeriodicidade(3));
+		planoDiogo.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(3));
+		planoBeatriz.procurarCondicao(nutricao.getId()).adicionarRegra(new RegraPeriodicidade(1));
+		planoBeatriz.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(1));	
+
+
+		// 3. ASSOCIAR OS PLANOS AOS MEMBROS 
+
 		vitor.associarPlano(planoVitor);
 		iris.associarPlano(planoIris);
 		ines.associarPlano(planoInes);
@@ -249,38 +207,13 @@ public class Arranque {
 		diogo.associarPlano(planoDiogo);
 		beatriz.associarPlano(planoBeatriz);
 
-
-		// System.out.println("===== TESTE DOS PLANOS =====");
-
-		// for (Membro membro : ginasio.listarMembros()) {
-
-		// 	Plano plano = membro.getPlano();
-
-		// 	System.out.println(
-		// 		"Membro: " + membro.getNome()
-		// 		+ " | Plano: " + plano.getNome()
-		// 		+ " | Serviços: " + plano.getCondicoes().size()
-		// 	);
-		// }
-
 		// contratos associado aos membros 
 		for (Membro membro : ginasio.listarMembros()) {
 			criarContratosDoPlano(membro);
 		}
 
-
-		System.out.println("===== TESTE DOS CONTRATOS =====");
-
-		for (Membro membro : ginasio.listarMembros()) {
-
-			System.out.println(
-				membro.getNome()
-				+ " | Contratos: "
-				+ membro.getContratos().size()
-			);
-		}
-
-
+		
+		
 
 		SwingUtilities.invokeLater(() -> {
 			JanelaGinasio main = new JanelaGinasio();
