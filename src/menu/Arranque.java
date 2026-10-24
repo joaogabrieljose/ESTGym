@@ -20,6 +20,7 @@ import estgym.regras.CondicaoServico;
 import estgym.regras.ContratoServico;
 import estgym.regras.Plano;
 import estgym.regras.RegraDiasPorSemana;
+import estgym.regras.RegraDuracaoDiaria;
 import estgym.regras.RegraIntervaloMinimo;
 import estgym.regras.RegraLimiteDiario;
 import estgym.regras.RegraLimiteSemanal;
@@ -208,6 +209,15 @@ public class Arranque {
 		planoDiogo.procurarCondicao(piscina.getId()).adicionarRegra(new RegraDiasPorSemana(5));
 		planoBeatriz.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDiasPorSemana(5));
 
+		// REGRA DURAÇÃO DIARIA 
+		planoVitor.procurarCondicao(entrada.getId()).adicionarRegra(new RegraDuracaoDiaria(Duration.ofHours(1)));
+		planoIris.procurarCondicao(piscina.getId()).adicionarRegra(	new RegraDuracaoDiaria(Duration.ofMinutes(45)));
+		planoFilipe.procurarCondicao(piscina.getId()).adicionarRegra(new RegraDuracaoDiaria(Duration.ofMinutes(45)));
+		planoDiogo.procurarCondicao(piscina.getId()).adicionarRegra(new RegraDuracaoDiaria(Duration.ofHours(1)));
+		planoIris.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDuracaoDiaria(Duration.ofMinutes(45)));
+		planoFilipe.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDuracaoDiaria(Duration.ofMinutes(45)));
+		planoBeatriz.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDuracaoDiaria(Duration.ofHours(1)));
+
 
 
 		// 3. ASSOCIAR OS PLANOS AOS MEMBROS 
@@ -223,6 +233,8 @@ public class Arranque {
 		for (Membro membro : ginasio.listarMembros()) {
 			criarContratosDoPlano(membro);
 		}
+
+		
 
 		
 		
