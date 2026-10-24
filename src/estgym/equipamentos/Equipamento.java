@@ -66,14 +66,17 @@ public abstract class Equipamento {
         return duracaoFixa;
     }
 
-  public List<UtilizacaoAtiva> getUtilizacoesAtivas(LocalDateTime agora) {
+    public List<UtilizacaoAtiva> getUtilizacoesAtivas(LocalDateTime agora) {
         atualizarUtilizacoes(agora);
         return List.copyOf(utilizacoesAtivas);
     }
 
     public void atualizarUtilizacoes(LocalDateTime agora) {
-        Objects.requireNonNull(agora, "A data é obrigatória.");
-        utilizacoesAtivas.removeIf(utilizacao -> !utilizacao.estaEmCurso(agora));
+         Objects.requireNonNull(agora, "A data é obrigatória.");
+    }
+    public void removerUtilizacao(UtilizacaoAtiva utilizacao) {
+        Objects.requireNonNull(utilizacao);
+        utilizacoesAtivas.remove(utilizacao);
     }
 
     protected int contarUtilizacoesAtivas(LocalDateTime agora) {
