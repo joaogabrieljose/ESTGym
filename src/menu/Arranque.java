@@ -19,6 +19,7 @@ import estgym.modelo.TipoService;
 import estgym.regras.CondicaoServico;
 import estgym.regras.ContratoServico;
 import estgym.regras.Plano;
+import estgym.regras.RegraDiasPorSemana;
 import estgym.regras.RegraIntervaloMinimo;
 import estgym.regras.RegraLimiteDiario;
 import estgym.regras.RegraLimiteSemanal;
@@ -198,6 +199,17 @@ public class Arranque {
 		planoBeatriz.procurarCondicao(avaliacao.getId()).adicionarRegra(new RegraPeriodicidade(1));	
 
 
+		//* REGRAS DE DIAPORSEMANA 
+		planoVitor.procurarCondicao(entrada.getId()).adicionarRegra(new RegraDiasPorSemana(3));
+		planoIris.procurarCondicao(piscina.getId()).adicionarRegra(new RegraDiasPorSemana(2));
+		planoIris.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDiasPorSemana(3));
+		planoFilipe.procurarCondicao(piscina.getId())	.adicionarRegra(new RegraDiasPorSemana(2));
+		planoFilipe.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDiasPorSemana(3));
+		planoDiogo.procurarCondicao(piscina.getId()).adicionarRegra(new RegraDiasPorSemana(5));
+		planoBeatriz.procurarCondicao(personalTrainer.getId()).adicionarRegra(new RegraDiasPorSemana(5));
+
+
+
 		// 3. ASSOCIAR OS PLANOS AOS MEMBROS 
 
 		vitor.associarPlano(planoVitor);
@@ -212,6 +224,7 @@ public class Arranque {
 			criarContratosDoPlano(membro);
 		}
 
+		
 		
 		
 

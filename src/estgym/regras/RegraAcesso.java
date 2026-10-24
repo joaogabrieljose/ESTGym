@@ -1,6 +1,5 @@
 package estgym.regras;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import estgym.modelo.Membro;
