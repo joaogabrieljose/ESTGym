@@ -16,8 +16,8 @@ import estgym.ginasio.IGinasio;
 import estgym.modelo.Membro;
 import estgym.modelo.Servico;
 import estgym.modelo.TipoService;
-import estgym.modelo.UtilizacaoAtiva;
 import estgym.regras.CondicaoServico;
+import estgym.regras.ContratoServico;
 import estgym.regras.Plano;
 import estgym.regras.RegraLimiteDiario;
 import estgym.regras.RegraLimiteSemanal;
@@ -250,19 +250,36 @@ public class Arranque {
 		beatriz.associarPlano(planoBeatriz);
 
 
+		// System.out.println("===== TESTE DOS PLANOS =====");
 
-		System.out.println("===== TESTE DOS PLANOS =====");
+		// for (Membro membro : ginasio.listarMembros()) {
+
+		// 	Plano plano = membro.getPlano();
+
+		// 	System.out.println(
+		// 		"Membro: " + membro.getNome()
+		// 		+ " | Plano: " + plano.getNome()
+		// 		+ " | Serviços: " + plano.getCondicoes().size()
+		// 	);
+		// }
+
+		// contratos associado aos membros 
+		for (Membro membro : ginasio.listarMembros()) {
+			criarContratosDoPlano(membro);
+		}
+
+
+		System.out.println("===== TESTE DOS CONTRATOS =====");
 
 		for (Membro membro : ginasio.listarMembros()) {
 
-			Plano plano = membro.getPlano();
-
 			System.out.println(
-				"Membro: " + membro.getNome()
-				+ " | Plano: " + plano.getNome()
-				+ " | Serviços: " + plano.getCondicoes().size()
+				membro.getNome()
+				+ " | Contratos: "
+				+ membro.getContratos().size()
 			);
 		}
+
 
 
 		SwingUtilities.invokeLater(() -> {
@@ -302,6 +319,7 @@ public class Arranque {
 	}
 
 
+
 	private static void adicionarCondicao( Plano plano,Servico servico,String descricao,Duration duracao,Integer limiteDiario,Integer limiteSemanal) {
 
 		CondicaoServico condicao = new CondicaoServico(servico, descricao, duracao);
@@ -315,6 +333,40 @@ public class Arranque {
 		}
 		plano.adicionarCondicao(condicao);
 	}
+
+
+
+	// este metodo percorre todos as condições do plano e cria contrato por cada serviço
+
+	private static void criarContratosDoPlano(Membro membro) {
+
+		Plano plano = membro.getPlano();
+
+		if (plano == null) {throw new IllegalStateException("O membro não possui um plano associado.");
+		}
+
+		for (CondicaoServico condicao : plano.getCondicoes()) {
+
+			Duration tempoExtra = Duration.ZERO;
+
+			// Tempo extra dos duches
+			if (condicao.getServico().getTipo()== TipoService.DUCHE) {
+
+				if (membro.getId() == 1) {
+					tempoExtra = Duration.ofMinutes(2);
+				} else if (membro.getId() <= 4) {
+					tempoExtra = Duration.ofMinutes(2);
+				} else {
+					tempoExtra = Duration.ofMinutes(3);
+				}
+			}
+
+			ContratoServico contrato = new ContratoServico(
+				condicao.getServico(),condicao.getDescricao(),condicao.getRegras(),condicao.getDuracaoPermitida(),tempoExtra);
+			membro.adicionarContrato(contrato);
+		}
+	}
+
 }
 
 
