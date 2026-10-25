@@ -130,61 +130,136 @@ public class JanelaGinasio extends JFrame {
         painelBotoes.repaint();
     }
 
-        
-        /**
-         * Chamado quando se pressiona num botão de equipamento
-         *
-         * @param equipamentoId o id do equipamento
-         * @param source        o botão que foi pressionado
-         */
-        protected void usarEquipamento(int equipamentoId, JButton source) {
 
-            // TODO: pedir qual o membro que está a tentar usar o equipamento
-            Object m = pedirMembro(source);
+    /**
+     * Chamado quando se pressiona num botão de equipamento
+     *
+     * @param equipamentoId o id do equipamento
+     * @param source        o botão que foi pressionado
+     */
+    protected void usarEquipamento(int equipamentoId, JButton source) {
 
-            if (m == null)
-                return;
+        // TODO: pedir qual o membro que está a tentar usar o equipamento
+        Object m = pedirMembro(source);
 
-            Membro membro = (Membro) m;
+        if (m == null)
+            return;
 
-            Equipamento equipamento = null;
+        Membro membro = (Membro) m;
 
-            for (Equipamento eq : ginasio.listarEquipamentos()) {
-                if (eq.getId() == equipamentoId) {
-                    equipamento = eq;
-                    break;
-                }
-            }
+        // Procurar o equipamento selecionado
+        Equipamento equipamento = null;
 
-            if (equipamento == null) {
-                JOptionPane.showMessageDialog( source,  "Equipamento não encontrado.",  "Erro",  JOptionPane.ERROR_MESSAGE );
-                return;
-            }
-
-            // TODO ver se pode usar o equipamento
-            try {
-
-                TipoService tipo = equipamento.getServico().getTipo();
-
-                // Estes serviços serão implementados posteriormente
-                if (tipo == TipoService.ENTRADA ||tipo == TipoService.SAIDA ||equipamento instanceof EquipamentoAula) {
-                    JOptionPane.showMessageDialog( source,"Este tipo de utilização ainda não está implementado.");
-                    return;
-                }
-                // TODO se sim usar
-                UtilizacaoAtiva utilizacao = gestor.iniciarUtilizacao( membro, equipamento, RelogioSimulado.getRelogioSimulado().tempoAtual());
-                botoes.get(equipamentoId).setEnabled(false);
-
-                JOptionPane.showMessageDialog(source,"Utilização autorizada!\n"+ "Membro: " + membro.getNome()+ "\nEquipamento: " + equipamento.getNome()
-                    + "\nFim previsto: " + utilizacao.getDataFimPrevista());
-
-            } catch (IllegalStateException | IllegalArgumentException e) {
-                // senão avisar que não pode usar
-                JOptionPane.showMessageDialog(source,"Não pode usar este equipamento!\n" + e.getMessage(),"Uso não autorizado", JOptionPane.ERROR_MESSAGE);
+        for (Equipamento eq : ginasio.listarEquipamentos()) {
+            if (eq.getId() == equipamentoId) {
+                equipamento = eq;
+                break;
             }
         }
 
+        if (equipamento == null) {
+            JOptionPane.showMessageDialog(
+                source,
+                "Equipamento não encontrado.",
+                "Erro",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
 
+        // TODO ver se pode usar o equipamento
+        try {
+
+            LocalDateTime agora =
+                RelogioSimulado.getRelogioSimulado().tempoAtual();
+
+            TipoService tipo = equipamento.getServico().getTipo();
+
+            // Tratar a porta de entrada
+            if (tipo == TipoService.ENTRADA) {
+
+                gestor.processarEntrada(membro, equipamento, agora);
+
+                JOptionPane.showMessageDialog(
+                    source,
+                    "Entrada autorizada!\nMembro: " + membro.getNome(),
+                    "Entrada",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                atualizarTabelas(membro.getId());
+                return;
+            }
+
+            // Tratar a porta de saída
+            if (tipo == TipoService.SAIDA) {
+
+                gestor.processarSaida(membro, equipamento, agora);
+
+                JOptionPane.showMessageDialog(
+                    source,
+                    "Saída autorizada!\nMembro: " + membro.getNome(),
+                    "Saída",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                atualizarTabelas(membro.getId());
+                return;
+            }
+
+            // As aulas de grupo serão implementadas posteriormente
+            if (equipamento instanceof EquipamentoAula) {
+
+                JOptionPane.showMessageDialog(
+                    source,
+                    "As aulas de grupo ainda não estão implementadas.",
+                    "Informação",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+                return;
+            }
+
+            // TODO se sim usar
+            UtilizacaoAtiva utilizacao =
+                gestor.iniciarUtilizacao(membro, equipamento, agora);
+
+            JButton botao = botoes.get(equipamentoId);
+
+            if (botao != null) {
+                botao.setEnabled(false);
+            }
+
+            JOptionPane.showMessageDialog(
+                source,
+                "Utilização autorizada!\n"
+                    + "Membro: " + membro.getNome()
+                    + "\nEquipamento: " + equipamento.getNome()
+                    + "\nFim previsto: "
+                    + utilizacao.getDataFimPrevista()
+                        .format(DateTimeFormatter.ofPattern(
+                            "dd/MM/yyyy HH:mm:ss"
+                        )),
+                "Utilização autorizada",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+            atualizarTabelas(membro.getId());
+
+        } catch (IllegalStateException | IllegalArgumentException e) {
+
+            // senão avisar que não pode usar
+            JOptionPane.showMessageDialog(
+                source,
+                "Não pode usar este equipamento!\n"
+                    + e.getMessage(),
+                "Uso não autorizado",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+        
+        
     /**
      * Pede o número identificador do membro (simula a pssagem do cartão de
      * identificação)

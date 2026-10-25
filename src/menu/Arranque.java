@@ -240,7 +240,7 @@ public class Arranque {
 		GestorUtilizacoes gestor = new GestorUtilizacoes();
 		
 		// TESTE TEMPORÁRIO: colocar o Vítor dentro do ginásio
-		vitor.entrarGinasio();
+		//vitor.entrarGinasio();
 		
 
 		SwingUtilities.invokeLater(() -> {

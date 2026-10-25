@@ -15,7 +15,9 @@ public class Membro {
     private final String nome;
 
     private boolean dentroGinasio;
+     private LocalDateTime dataHoraEntrada; 
     private Plano plano;
+   
 
     private final List<ContratoServico> contratos;
     private final List<RegistoUtilizacao> registos;
@@ -35,6 +37,7 @@ public class Membro {
         this.plano = plano;
 
         this.dentroGinasio = false;
+        this.dataHoraEntrada = null;
         this.contratos = new ArrayList<>();
         this.registos = new ArrayList<>();
         this.utilizacaoAtiva = null;
@@ -50,6 +53,10 @@ public class Membro {
 
     public boolean isDentroGinasio() {
         return dentroGinasio;
+    }
+
+    public LocalDateTime getDataHoraEntrada() {
+        return dataHoraEntrada;
     }
 
     public Plano getPlano() {
@@ -95,28 +102,41 @@ public class Membro {
         registos.add(registo);
     }
 
-    public void entrarGinasio() {
+   
+    public void entrarGinasio(LocalDateTime agora) {
+        Objects.requireNonNull(agora, "A data de entrada é obrigatória.");
 
         if (dentroGinasio) {
             throw new IllegalStateException( "O membro já está dentro do ginásio.");
         }
+
         dentroGinasio = true;
+        dataHoraEntrada = agora;
     }
 
-    public void sairGinasio() {
+    public void sairGinasio(LocalDateTime agora) {
+        Objects.requireNonNull(agora, "A data de saída é obrigatória.");
 
         if (!dentroGinasio) {
-            throw new IllegalStateException( "O membro já está fora do ginásio.");
+            throw new IllegalStateException("O membro já está fora do ginásio.");
+        }
+
+        if (dataHoraEntrada == null || agora.isBefore(dataHoraEntrada)) {
+            throw new IllegalArgumentException("A data de saída não pode ser anterior à entrada.");
         }
         dentroGinasio = false;
+        dataHoraEntrada = null;
     }
+
+
 
     public boolean estaOcupado(LocalDateTime agora) {
 
         Objects.requireNonNull(agora);
-
         return utilizacaoAtiva != null && utilizacaoAtiva.estaEmCurso(agora);
     }
+
+
 
     public void iniciarUtilizacao(UtilizacaoAtiva utilizacao, LocalDateTime agora) {
 
@@ -132,6 +152,7 @@ public class Membro {
         }
         this.utilizacaoAtiva = utilizacao;
     }
+
 
     public void terminarUtilizacao(LocalDateTime agora) {
 
