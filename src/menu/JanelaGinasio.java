@@ -293,21 +293,39 @@ public class JanelaGinasio extends JFrame {
     /**
      * Chamado a cada segundo: reflete o estado atual de cada equipamento
      */
+    
+/**
+ * Chamado a cada segundo: reflete o estado atual de cada equipamento
+ */
     private void atualizarBotoes() {
+
+        LocalDateTime agora = RelogioSimulado.getRelogioSimulado().tempoAtual();
+        gestor.atualizarUtilizacoes(agora);
+
         for (Map.Entry<Integer, JButton> e : botoes.entrySet()) {
+
             int equipamentoId = e.getKey();
             JButton botao = e.getValue();
 
-            // TODO saber o estado e o nome do equipamento associado ao botão
-            boolean ocupado = false;
-            String nome = "Nome equipamento";
+            // TODO FEITO  saber o estado e o nome do equipamento associado ao botão
+            for (Equipamento equipamento : ginasio.listarEquipamentos()) {
 
-            if (!botao.isEnabled() && !ocupado) {
-                botao.setEnabled(true);
+                if (equipamento.getId() == equipamentoId) {
+
+                    boolean ocupado =
+                        !equipamento.estaDisponivel(agora);
+
+                    String nome = equipamento.getNome();
+
+                    botao.setEnabled(!ocupado);
+                    botao.setToolTipText(nome);
+
+                    break;
+                }
             }
-            botao.setToolTipText(nome);
         }
     }
+
 
     /**
      * inicializa todos os elementos visuais da janela

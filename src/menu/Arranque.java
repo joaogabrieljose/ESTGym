@@ -241,6 +241,7 @@ public class Arranque {
 		
 		// TESTE TEMPORÁRIO: colocar o Vítor dentro do ginásio
 		vitor.entrarGinasio();
+		
 
 		SwingUtilities.invokeLater(() -> {
 			JanelaGinasio main = new JanelaGinasio(ginasio, gestor);

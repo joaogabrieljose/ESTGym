@@ -121,5 +121,89 @@ public class GestorUtilizacoes {
         }
     }
 
+    public void processarEntrada(Membro membro, Equipamento equipamento,LocalDateTime agora) {
+
+        Objects.requireNonNull(membro, "O membro é obrigatório.");
+        Objects.requireNonNull(equipamento, "O equipamento é obrigatório.");
+        Objects.requireNonNull(agora, "A data é obrigatória.");
+
+        // Verificar se o equipamento é uma porta de entrada
+        if (equipamento.getServico().getTipo() != TipoService.ENTRADA) {
+            throw new IllegalArgumentException("O equipamento não é uma porta de entrada.");
+        }
+        
+        if (membro.isDentroGinasio()) {
+            throw new IllegalStateException( "O membro já se encontra dentro do ginásio.");
+        }
+
+        // Procurar o contrato de entrada
+        ContratoServico contrato = membro.getContratos()
+            .stream()
+            .filter(c -> c.getServico().getId()
+                == equipamento.getServico().getId())
+            .findFirst().orElseThrow(() -> new IllegalStateException( "O membro não possui contrato de entrada."));
+
+        if (!contrato.permiteUtilizacao(membro, agora)) {
+            throw new IllegalStateException("O contrato não permite a entrada neste momento.");
+        }
+
+        if (!equipamento.estaDisponivel(agora)) {
+            throw new IllegalStateException("A porta de entrada está ocupada.");
+        }
+
+        membro.entrarGinasio();
+        Duration duracao = equipamento.getDuracaoFixa();
+
+        if (duracao == null) {
+            throw new IllegalStateException("A porta não possui duração configurada.");
+        }
+
+        RegistoUtilizacao registo = new RegistoUtilizacao(equipamento.getServico(),equipamento,agora,agora.plus(duracao));
+        membro.adicionarRegisto(registo);
+    }
+
+
+
+
+
+    public void processarSaida(Membro membro,Equipamento equipamento,LocalDateTime agora) {
+
+        Objects.requireNonNull(membro, "O membro é obrigatório.");
+        Objects.requireNonNull(equipamento, "O equipamento é obrigatório.");
+        Objects.requireNonNull(agora, "A data é obrigatória.");
+
+        if (equipamento.getServico().getTipo() != TipoService.SAIDA) {
+            throw new IllegalArgumentException("O equipamento não é uma porta de saída.");
+        }
+
+        if (!membro.isDentroGinasio()) {
+            throw new IllegalStateException("O membro não se encontra dentro do ginásio.");
+        }
+
+        if (membro.getUtilizacaoAtiva() != null) {
+            throw new IllegalStateException("O membro ainda possui uma utilização por finalizar." );
+        }
+
+        ContratoServico contrato = membro.getContratos()
+            .stream()
+            .filter(c -> c.getServico().getId()
+                == equipamento.getServico().getId())
+            .findFirst().orElseThrow(() -> new IllegalStateException("O membro não possui contrato de saída."));
+
+        if (!contrato.permiteUtilizacao(membro, agora)) {
+            throw new IllegalStateException("O contrato não permite a saída.");
+        }
+
+        membro.sairGinasio();
+        Duration duracao = equipamento.getDuracaoFixa();
+
+        if (duracao == null) {
+            throw new IllegalStateException( "A porta não possui duração configurada.");
+        }
+
+        RegistoUtilizacao registo = new RegistoUtilizacao(equipamento.getServico(),equipamento,agora,agora.plus(duracao));
+        membro.adicionarRegisto(registo);
+    }
+
     
 }
