@@ -2,6 +2,8 @@ package estgym.ginasio;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -15,6 +17,8 @@ import estgym.modelo.UtilizacaoAtiva;
 import estgym.regras.ContratoServico;
 
 public class GestorUtilizacoes {
+
+    private final List<UtilizacaoAtiva> utilizacoes =new ArrayList<>();
 
      public UtilizacaoAtiva iniciarUtilizacao(Membro membro,Equipamento equipamento,LocalDateTime agora) {
     
@@ -72,7 +76,8 @@ public class GestorUtilizacoes {
         UtilizacaoAtiva utilizacao = new UtilizacaoAtiva(membro,equipamento.getServico(),equipamento,agora,agora.plus(duracao));
         membro.iniciarUtilizacao(utilizacao, agora);
         equipamento.iniciarUtilizacao(utilizacao, agora);
-        
+        utilizacoes.add(utilizacao);
+
         return utilizacao;
     }
 
@@ -97,6 +102,24 @@ public class GestorUtilizacoes {
         membro.adicionarRegisto(registo);
         equipamento.removerUtilizacao(utilizacao);
         membro.terminarUtilizacao(agora);
+        utilizacoes.remove(utilizacao);
     }
+
+
+    public void atualizarUtilizacoes(LocalDateTime agora) {
+
+        Objects.requireNonNull(agora, "A data atual é obrigatória.");
+
+        // Criar uma cópia para evitar modificar
+        // a lista enquanto a percorremos.
+        List<UtilizacaoAtiva> copia =new ArrayList<>(utilizacoes);
+        for (UtilizacaoAtiva utilizacao : copia) {
+
+            if (utilizacao.terminou(agora)) {
+                finalizarUtilizacao(utilizacao, agora);
+            }
+        }
+    }
+
     
 }

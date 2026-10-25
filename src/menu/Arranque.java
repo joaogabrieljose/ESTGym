@@ -7,10 +7,12 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import estgym.equipamentos.Equipamento;
 import estgym.equipamentos.EquipamentoAula;
 import estgym.equipamentos.EquipamentoExclusivo;
+import estgym.ginasio.GestorUtilizacoes;
 import estgym.ginasio.GinasioDefault;
 import estgym.ginasio.IGinasio;
 import estgym.modelo.Membro;
@@ -234,32 +236,59 @@ public class Arranque {
 			criarContratosDoPlano(membro);
 		}
 
+		// Gestor responsável por controlar as utilizações
+		GestorUtilizacoes gestor = new GestorUtilizacoes();
 		
-		
-
-		
-		
-		
+		// TESTE TEMPORÁRIO: colocar o Vítor dentro do ginásio
+		vitor.entrarGinasio();
 
 		SwingUtilities.invokeLater(() -> {
-			JanelaGinasio main = new JanelaGinasio();
+			JanelaGinasio main = new JanelaGinasio(ginasio, gestor);
 
-			// TODO adicionar os equipamentos ao simulador (ids apenas exemplificativos)
-			main.addEquipamento(10, getIcons("porta"));
-			main.addEquipamento(11, getIcons("bebida"));
-			main.addEquipamento(12, getIcons("duche"));
-			main.addEquipamento(13, getIcons("pt"));
-			main.addEquipamento(14, getIcons("nutricionista"));
-			main.addEquipamento(15, getIcons("poltrona"));
-			main.addEquipamento(16, getIcons("aula"));
-			main.addEquipamento(17, getIcons("fisica"));
-			main.addEquipamento(18, getIcons("porta_piscina"));
+			// TODO FEITO adicionar os equipamentos ao simulador (ids apenas exemplificativos)
+						
+			main.addEquipamento(100, getIcons("porta"));
+			main.addEquipamento(101, getIcons("bebida"));
+			main.addEquipamento(102, getIcons("aula"));
+			main.addEquipamento(103, getIcons("porta"));
+
+			main.addEquipamento(104, getIcons("duche"));
+			main.addEquipamento(105, getIcons("duche"));
+			main.addEquipamento(106, getIcons("duche"));
+
+			main.addEquipamento(107, getIcons("pt"));
+			main.addEquipamento(108, getIcons("pt"));
+
+			main.addEquipamento(109, getIcons("nutricionista"));
+			main.addEquipamento(110, getIcons("nutricionista"));
+
+			main.addEquipamento(111, getIcons("fisica"));
+
+			main.addEquipamento(112, getIcons("poltrona"));
+			main.addEquipamento(113, getIcons("poltrona"));
+
+			main.addEquipamento(114, getIcons("porta_piscina"));
+
+			main.addEquipamento(115, getIcons("aula"));
+			main.addEquipamento(116, getIcons("aula"));
+			main.addEquipamento(117, getIcons("aula"));
+
 			
 			// System.out.println("testa se funciona a nova version ");
 
 			main.setVisible(true);
 			RelogioDialog relog = new RelogioDialog(main, new Point(200, 20));
 			relog.setVisible(true);
+
+			// Verificar periodicamente as utilizações
+			Timer timerGestor = new Timer(1000, e -> {
+
+				LocalDateTime agora = relogio.tempoAtual();
+
+				gestor.atualizarUtilizacoes(agora);
+			});
+
+			timerGestor.start();
 
 		});
 	}
